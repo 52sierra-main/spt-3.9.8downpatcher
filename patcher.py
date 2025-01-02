@@ -5,8 +5,11 @@ import subprocess
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from tkinter import Tk, filedialog
+import time
+# in order to compile this and keep all the dialogues, in terminal, do [pyinstaller --console thisfilename.py](of course get rid of the brackets) 
+# you also might want to add --onefile next to the --console argument in order to make it into one executable and not a slurge of files of which many people start asking you dumb shit cuz they decided to double click that instead of the exe for whatever reason
 
-
+# had to add this because fucking pyinstaller messes up the working directory. without this, it starts at user\blahblah\appdata\blahblah....
 def get_base_dir():
     """Return the base directory of the script or executable."""
     if getattr(sys, 'frozen', False):  # Check if running in a PyInstaller executable
@@ -15,18 +18,18 @@ def get_base_dir():
         return os.path.dirname(os.path.abspath(__file__))  # Script's directory
 
 
-# script_dir = os.path.dirname(os.path.abspath(__file__))
+# script_dir = os.path.dirname(os.path.abspath(__file__)) <-this was the original code when i was running off the python file itself
 script_dir = get_base_dir()
+
 
 # Paths
 patch_dir = os.path.join(script_dir, "patchfiles")
 hpatchz_path = os.path.join(script_dir, "bin", "x64", "hpatchz.exe")
-
 log_file = "unipatch-log.txt"
 
 
+# use Tkinker to prompt the choose folder popup
 def choose_directory():
-    """Prompt the user to choose a directory."""
     root = Tk()
     root.withdraw()  # Hide the main Tkinter window
     directory = filedialog.askdirectory(title="Select the Directory to Patch")
@@ -36,8 +39,9 @@ def choose_directory():
     return directory
 
 
+# read metadata from the .info file
 def read_metadata(patch_dir):
-    """Read metadata from the .info file."""
+    
     info_file = next(Path(patch_dir).glob("*.info"), None)
     if not info_file:
         raise FileNotFoundError(f"No .info file found in {patch_dir}")
@@ -53,19 +57,19 @@ def read_metadata(patch_dir):
     return metadata
 
 
+# apply a single patch using hpatchz
 def apply_patch(hdiff_file, dest_dir):
-    """Apply a single patch using hpatchz."""
     relative_path = hdiff_file.relative_to(patch_dir).with_suffix("")  # Remove .hdiff suffix
 
-    # Construct the full destination path
+    # construct the full destination path
     dest_file = Path(dest_dir) / relative_path
 
-    # Check if the destination file exists
+    # check for destination file 
     if not dest_file.exists():
         print(f"WARNING: Destination file {dest_file} not found. Skipping patch.")
         return
 
-    # Apply the patch
+    # apply 
     try:
         subprocess.run(
             [hpatchz_path, "-f", str(dest_file), str(hdiff_file), str(dest_file)],
@@ -98,7 +102,7 @@ def finalize_patch(dest_dir):
     print("파일 추가 및 제거")
     print("------------------")
 
-    # Files to delete
+    # files to delete, i don't think this is necessary but i took reference from the output of the existing patch
     files_to_delete = [
         "EscapeFromTarkov_BE.exe",
         "Uninstall.exe",
@@ -106,7 +110,7 @@ def finalize_patch(dest_dir):
         "ConsistencyInfo",
     ]
 
-    # Directories to delete
+    # directories to delete, same for this but i sure don't want bAtTLe EYe to eYE me in the ass while playing spt (jk)
     dirs_to_delete = [
         "BattlEye",
     ]
@@ -129,13 +133,13 @@ def finalize_patch(dest_dir):
         else:
             print(f"Directory not found: {dir_path}")
 
-    # Copy additional files
+    # copy additional files
     additional_files_dir = os.path.join(script_dir, "additional_files", "Escape From Tarkov")
     if os.path.exists(additional_files_dir):
         shutil.copytree(
             additional_files_dir,
             dest_dir,
-            dirs_exist_ok=True  # Allows merging directories
+            dirs_exist_ok=True  # allows merging directories
         )
         print(f"Copied additional files from {additional_files_dir} to {dest_dir}")
     else:
@@ -144,19 +148,22 @@ def finalize_patch(dest_dir):
 
 if __name__ == "__main__":
     try:
-        print("Reading metadata...")
+        print("메타데이터 읽는 중...")
+        time.sleep(1)
         metadata = read_metadata(patch_dir)
         print(f"Version: {metadata['version']}")
         print(f"Title: {metadata['title']}")
         print(f"Description: {metadata['description']}")
+        print("엔터를 눌러 진행하세요")
+        os.system("pause")
 
-        # 사용자 프롬프트(tkinker)
-        print("Please select the directory to patch:")
+        # tkinter prompt
+        print("패치할 타르코프 폴더를 선택하세요:")
         dest_dir = choose_directory()
 
-        print("Applying patches...")
+        print("패치 적용중...")
         process_patches(dest_dir)
-        print("패치적용")
+        print("패치적용완료")
         print("마무리 중...")
         finalize_patch(dest_dir)
         print("모든 작업 완료, 즐거운 게임 되세요")
