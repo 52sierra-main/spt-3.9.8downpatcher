@@ -20,4 +20,4 @@ you can use pyinstaller to build it into a portable exe file.
 recommended command is->  pyinstaller --onefile --console filename.py
 
 the patcher folder package should look like this(except for the patcher.py, you don't need to include it)  
-![alt text]([https://drive.google.com/file/d/1GFKxC7b88Wh0KsxUVyfx6zvZfnkT7nDu/view?usp=sharing])
+
