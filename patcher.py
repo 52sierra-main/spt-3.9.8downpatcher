@@ -83,7 +83,7 @@ def apply_patch(hdiff_file, dest_dir):
 
 
 def process_patches(dest_dir):
-    """Process all .hdiff files in the patch directory."""
+    # Process all .hdiff files in the patch directory.
     hdiff_files = list(Path(patch_dir).rglob("*.hdiff"))
     if not hdiff_files:
         print("No .hdiff files found in the patch directory.")
@@ -91,13 +91,13 @@ def process_patches(dest_dir):
 
     print(f"Found {len(hdiff_files)} patch files. Applying patches...")
 
-    with ThreadPoolExecutor() as executor:
+    with ThreadPoolExecutor(max_workers=6) as executor:
         for hdiff in hdiff_files:
             executor.submit(apply_patch, hdiff, dest_dir)
 
 
 def finalize_patch(dest_dir):
-    """Delete unnecessary files and copy additional files."""
+    # delete stuff and add additional files
     print("------------------")
     print("파일 추가 및 제거")
     print("------------------")
