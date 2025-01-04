@@ -32,9 +32,9 @@ log_file = "unipatch-log.txt"
 def choose_directory():
     root = Tk()
     root.withdraw()  # Hide the main Tkinter window
-    directory = filedialog.askdirectory(title="Select the Directory to Patch")
+    directory = filedialog.askdirectory(title="복사 붙여넣은 타르코프 폴더를 선택해주세요")
     if not directory:
-        print("No directory selected. Exiting.")
+        input("아무것도 선택하지 않았습니다.")
         exit(1)
     return directory
 
@@ -44,7 +44,7 @@ def read_metadata(patch_dir):
     
     info_file = next(Path(patch_dir).glob("*.info"), None)
     if not info_file:
-        raise FileNotFoundError(f"No .info file found in {patch_dir}")
+        raise FileNotFoundError(f"메타데이터 파일 찾기 실패")
 
     metadata = {}
     with open(info_file, "r", encoding="utf-8") as f:
@@ -66,8 +66,8 @@ def apply_patch(hdiff_file, dest_dir):
 
     # check for destination file 
     if not dest_file.exists():
-        print(f"WARNING: Destination file {dest_file} not found. Skipping patch.")
-        return
+        input(f"경고!: 타겟 파일을 찾지 못하였습니다! 타르코프 클라이언트를 확인하고 다시 복사해주시기 바랍니다! 파일: {dest_file} ")
+        exit(1)
 
     # apply 
     try:
@@ -86,10 +86,10 @@ def process_patches(dest_dir):
     # Process all .hdiff files in the patch directory.
     hdiff_files = list(Path(patch_dir).rglob("*.hdiff"))
     if not hdiff_files:
-        print("No .hdiff files found in the patch directory.")
-        return
+        input("패치 폴더 없음.")
+        exit(1)
 
-    print(f"Found {len(hdiff_files)} patch files. Applying patches...")
+    print(f"Found {len(hdiff_files)} patch files. Applying...")
 
     with ThreadPoolExecutor(max_workers=6) as executor:
         for hdiff in hdiff_files:
@@ -97,41 +97,47 @@ def process_patches(dest_dir):
 
 
 def finalize_patch(dest_dir):
-    # delete stuff and add additional files
+    """ delete stuff and add additional files"""
     print("------------------")
     print("파일 추가 및 제거")
     print("------------------")
 
-    # files to delete, i don't think this is necessary but i took reference from the output of the existing patch
-    files_to_delete = [
-        "EscapeFromTarkov_BE.exe",
-        "Uninstall.exe",
-        "UnityCrashHandler64.exe",
-        "ConsistencyInfo",
-    ]
+    # read the list of files to delete from delete_list.txt
+    delete_list_file = os.path.join(script_dir, "delete_list.txt")
+    files_to_delete = []
 
-    # directories to delete, same for this but i sure don't want bAtTLe EYe to eYE me in the ass while playing spt (jk)
-    dirs_to_delete = [
-        "BattlEye",
-    ]
+    if os.path.exists(delete_list_file):
+        with open(delete_list_file, "r", encoding="utf-8") as f:
+            files_to_delete = [line.strip() for line in f if line.strip()]
+    else:
+        input(f"제거 파일 리스트 없음: {delete_list_file}")
+        exit(1)
 
-    # Remove files
+    # remove files 
     for file in files_to_delete:
         file_path = os.path.join(dest_dir, file)
         if os.path.exists(file_path):
-            os.remove(file_path)
-            print(f"Deleted file: {file_path}")
+            try:
+                os.remove(file_path)
+                print(f"제거된 파일: {file_path}")
+            except Exception as e:
+                print(f"파일 제거 실패: {file_path}. Error: {e}")
         else:
-            print(f"File not found: {file_path}")
+            print(f"파일 찾지 못함(무시하셔도 상관없습니다): {file_path}")
 
-    # Remove directories
-    for directory in dirs_to_delete:
-        dir_path = os.path.join(dest_dir, directory)
-        if os.path.exists(dir_path):
-            shutil.rmtree(dir_path)
-            print(f"Deleted directory: {dir_path}")
-        else:
-            print(f"Directory not found: {dir_path}")
+    # remove empty directories
+    print("빈 폴더 제거중...")
+    for root, dirs, files in os.walk(dest_dir, topdown=False):  # Process subdirectories first
+        for directory in dirs:
+            dir_path = os.path.join(root, directory)
+            if not os.listdir(dir_path):  # Check if the directory is empty
+                try:
+                    os.rmdir(dir_path)
+                    print(f"폴더 제거 완료: {dir_path}")
+                except Exception as e:
+                    print(f"폴더 제거 실패 {dir_path}. Error: {e}")
+            else:
+                print(f"폴더 확인 완료: {dir_path}")
 
     # copy additional files
     additional_files_dir = os.path.join(script_dir, "additional_files", "Escape From Tarkov")
@@ -141,9 +147,10 @@ def finalize_patch(dest_dir):
             dest_dir,
             dirs_exist_ok=True  # allows merging directories
         )
-        print(f"Copied additional files from {additional_files_dir} to {dest_dir}")
+        print(f"추가파일 카피 {additional_files_dir} 에서 {dest_dir}")
     else:
-        print(f"Additional files directory not found: {additional_files_dir}")
+        input(f"추가파일 폴더 찾지 못함: {additional_files_dir}")
+        exit(1)
 
 
 if __name__ == "__main__":
