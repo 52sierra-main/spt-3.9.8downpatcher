@@ -6,6 +6,9 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from tkinter import Tk, filedialog
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from tqdm import tqdm # either using the raw py file or building it into an exe, you need to pip install this onto your python environment
+
 # in order to compile this and keep all the dialogues, in terminal, do [pyinstaller --console thisfilename.py](of course get rid of the brackets) 
 # you also might want to add --onefile next to the --console argument in order to make it into one executable and not a slurge of files of which many people start asking you dumb shit cuz they decided to double click that instead of the exe for whatever reason
 
@@ -77,7 +80,7 @@ def apply_patch(hdiff_file, dest_dir):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        print(f"Patched: {dest_file}")
+        tqdm.write(f"Patched: {dest_file}")
     except subprocess.CalledProcessError as e:
         print(f"ERROR: Failed to patch {dest_file}. Error: {e.stderr.decode()}")
 
@@ -91,9 +94,16 @@ def process_patches(dest_dir):
 
     print(f"Found {len(hdiff_files)} patch files. Applying...")
 
-    with ThreadPoolExecutor(max_workers=6) as executor:
-        for hdiff in hdiff_files:
-            executor.submit(apply_patch, hdiff, dest_dir)
+# used tqdm to create a progress bar
+    with tqdm(total=len(hdiff_files), desc="Processing files", unit="hdiff") as progress:
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            futures = [executor.submit(apply_patch, hdiff, dest_dir) for hdiff in hdiff_files]
+            for future in as_completed(futures):
+                progress.update(1)
+
+    #with ThreadPoolExecutor(max_workers=6) as executor:
+    #    for hdiff in hdiff_files:
+    #        executor.submit(apply_patch, hdiff, dest_dir)
 
 
 def finalize_patch(dest_dir):

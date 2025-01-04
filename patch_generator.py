@@ -3,6 +3,9 @@ import os
 import shutil
 from concurrent.futures import ThreadPoolExecutor
 import subprocess
+from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, as_completed
+# tqdm is external, must pip install in your python environment
 
 # Paths
 source = r'C:\patch_maker\Escape from Tarkov'  # latest tarkov client THAT NEEDS PATCHING
@@ -34,13 +37,13 @@ def process_file(dest_file):
 
     # check if source file exist
     if not os.path.exists(source_file):
-        print(f"WARNING: Missing source file for {dest_file}. Copying to missing files directory.")
+        tqdm.write(f"WARNING: Missing source file for {dest_file}. Copying to missing files directory.")
         additional_files(rel_path, dest_file)
         return
 
     # check if files are identical
     if filecmp.cmp(source_file, dest_file, shallow=False):
-        print(f"Skipping identical file: {dest_file}")
+        tqdm.write(f"Skipping identical file: {dest_file}")
         return
 
     # create patch
@@ -51,7 +54,7 @@ def process_file(dest_file):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        print(f"Processed {dest_file} successfully.")
+        tqdm.write(f"Processed {dest_file} successfully.")
     # when error, just save the thing for copy paste
     except subprocess.CalledProcessError as e:
         additional_files(rel_path, dest_file)
@@ -86,12 +89,20 @@ def process_directory():
         for file in files:
             files_to_process.append(os.path.join(root, file))
 
-    # threadPoolExecutor for parallel
-    with ThreadPoolExecutor(max_workers=14) as executor:
-        executor.map(process_file, files_to_process)
+    # threadPoolExecutor for parallel(below was the original code)
+    #with ThreadPoolExecutor(max_workers=14) as executor:
+    #    executor.map(process_file, files_to_process)
+
+    # used tqdm to create a progress bar
+    with tqdm(total=len(files_to_process), desc="Processing files", unit="file") as progress:
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(process_file, file) for file in files_to_process]
+            for future in as_completed(futures):
+                progress.update(1)
 
 # everything starts here
 if __name__ == "__main__":
     print("Starting patch creation...")
     process_directory()
+    detect_files_to_delete()
     input("Patch creation complete.")
