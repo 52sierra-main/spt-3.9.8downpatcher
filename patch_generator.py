@@ -8,12 +8,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # tqdm is external, must pip install in your python environment
 
 # Paths
-source = r'C:\patch_maker\Escape from Tarkov'  # latest tarkov client THAT NEEDS PATCHING
-dest = r'C:\patch_maker\target'  # tarkov client 0.14 for spt 3.9
-patch_output = r'C:\patch_maker\patch'  # patch files output folder
-missing_dir = r'C:\patch_maker\additional_files'  # files that exist in dest but not in source will be copied here
-hdiffz_path = r'C:\patch_maker\bin\x64\hdiffz.exe'  # Path to hdiffz 
-delete_list_file = r'C:\patch_maker\delete_list.txt' # for deleting junk in patching process
+source = r'C:\patch workspace\patch_maker\Escape from Tarkov'  # latest tarkov client THAT NEEDS PATCHING
+dest = r'C:\patch workspace\patch_maker\target'  # tarkov client 0.14 for spt 3.9
+patch_output = r'C:\patch workspace\patch_maker\patch'  # patch files output folder
+missing_dir = r'C:\patch workspace\patch_maker\additional_files'  # files that exist in dest but not in source will be copied here
+hdiffz_path = r'C:\patch workspace\patch_maker\bin\x64\hdiffz.exe'  # Path to hdiffz 
+delete_list_file = r'C:\patch workspace\patch_maker\delete_list.txt' # for deleting junk in patching process
 
 # create directories(probably not need this)
 os.makedirs(patch_output, exist_ok=True)
