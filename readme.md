@@ -12,12 +12,12 @@ the script uses multithreading so it will hoard resources for some period of tim
 
   
 ### [patcher]  
-will apply the patch using the patch folder and the additional folder created by the patch generator.  
+will apply the patch using the patch folder, delete list, and the additional folder created by the patch generator.  
 the .info metadata file must be created manually(just use notepad to create .txt and rename it into filename.info, check the source to see how it should look like).  
 it should be placed in the root of the patchfiles folder.
 it will prompt the user to choose the directory that needs patching with tkinker.  
 once the user chooses the directory, the rest of the process including patching and copy-pasting the additional files is automatic.  
-it will auto delete the specified files(in the source).  
+it will auto delete the specified files(delete list).  
 this also is multithreaded so it will hoard resources for tens of seconds(20 to 30seconds).  
 you can use pyinstaller to build it into a portable exe file.  
 recommended command is->  pyinstaller --onefile --console filename.py
