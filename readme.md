@@ -26,5 +26,5 @@ recommended command is->  pyinstaller --onefile --console filename.py
   
 the patcher folder package should look like this(except for the patcher.py, you don't need to include it)  
   
-![화면 캡처 2025-01-02 160227](https://github.com/user-attachments/assets/8bbfed35-71f5-45af-9274-63f86fc52d15)
+![image](https://github.com/user-attachments/assets/d8ffcc01-8759-4f10-b8f2-7f986dafd169)
 
