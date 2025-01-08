@@ -43,9 +43,9 @@ def choose_directory():
 
 
 # read metadata from the .info file
-def read_metadata(patch_dir):
+def read_metadata(script_dir):
     
-    info_file = next(Path(patch_dir).glob("*.info"), None)
+    info_file = next(Path(script_dir).glob("*.info"), None)
     if not info_file:
         raise FileNotFoundError(f"메타데이터 파일 찾기 실패")
 
@@ -150,7 +150,7 @@ def finalize_patch(dest_dir):
                 print(f"폴더 확인 완료: {dir_path}")
 
     # copy additional files
-    additional_files_dir = os.path.join(script_dir, "additional_files", "Escape From Tarkov")
+    additional_files_dir = os.path.join(script_dir, "additional_files")
     if os.path.exists(additional_files_dir):
         shutil.copytree(
             additional_files_dir,
