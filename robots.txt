@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://52sierra-main.github.io/spt-3.9.8downpatcher/sitemap.xml
