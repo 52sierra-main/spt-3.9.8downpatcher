@@ -6,9 +6,9 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from tkinter import Tk, filedialog
 import time
-import win32api
+import win32api # pip install pywin32
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tqdm import tqdm # either using the raw py file or building it into an exe, you need to pip install this onto your python environment
+from tqdm import tqdm # pip install tqdm
 
 # in order to compile this and keep all the dialogues, in terminal, do [pyinstaller --console thisfilename.py](of course get rid of the brackets) 
 # you also might want to add --onefile next to the --console argument in order to make it into one executable and not a slurge of files of which many people start asking you dumb shit cuz they decided to double click that instead of the exe for whatever reason
