@@ -10,8 +10,8 @@ import win32api # pip install pywin32
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm # pip install tqdm
 
-# in order to compile this and keep all the dialogues, in terminal, do [pyinstaller --console thisfilename.py](of course get rid of the brackets) 
-# you also might want to add --onefile next to the --console argument in order to make it into one executable and not a slurge of files of which many people start asking you dumb shit cuz they decided to double click that instead of the exe for whatever reason
+# in order to compile this and keep all the dialogues, in terminal, do [pyinstaller --console --onefile thisfilename.py]
+# --onefile make it into one executable and not a slurge of files of which many people start asking you dumb shit cuz they decided to double click that instead of the exe for whatever reason
 
 # had to add this because fucking pyinstaller messes up the working directory. without this, it starts at user\blahblah\appdata\blahblah....
 def get_base_dir():
@@ -31,7 +31,7 @@ patch_dir = os.path.join(script_dir, "patchfiles")
 hpatchz_path = os.path.join(script_dir, "bin", "x64", "hpatchz.exe")
 log_file = "unipatch-log.txt"
 
-# check client version(from chatgpt)
+# check client version
 def version_check(file_path):
     """get escapefromtarkov.exe version"""
     try:
@@ -53,7 +53,8 @@ def choose_directory():
         input("아무것도 선택하지 않았습니다.")
         exit(1)
     
-    executable = os.path.join(directory, "EscapeFromTarkov.exe")
+    # logic for checking for EscapeFromTarkov.exe and it's version as a foolproof design
+    executable = os.path.join(directory, "EscapeFromTarkov.exe") 
     if not executable:
         input("선택한 폴더에 타르코프 실행파일이 없습니다. 올바른 폴더를 선택해주세요.")
         exit(1)
