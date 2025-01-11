@@ -189,7 +189,7 @@ if __name__ == "__main__":
     try:
         print("메타데이터 읽는 중...")
         time.sleep(1)
-        metadata = read_metadata(patch_dir)
+        metadata = read_metadata(script_dir)
         print(f"Version: {metadata['version']}")
         print(f"Title: {metadata['title']}")
         print(f"Description: {metadata['description']}")
