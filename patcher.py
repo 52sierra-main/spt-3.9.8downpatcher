@@ -6,6 +6,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from tkinter import Tk, filedialog
 import time
+import win32api
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm # either using the raw py file or building it into an exe, you need to pip install this onto your python environment
 
@@ -30,6 +31,18 @@ patch_dir = os.path.join(script_dir, "patchfiles")
 hpatchz_path = os.path.join(script_dir, "bin", "x64", "hpatchz.exe")
 log_file = "unipatch-log.txt"
 
+# check client version(from chatgpt)
+def version_check(file_path):
+    """get escapefromtarkov.exe version"""
+    try:
+        info = win32api.GetFileVersionInfo(file_path, '\\')
+        ms = info['FileVersionMS']
+        ls = info['FileVersionLS']
+        version = f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
+        return version
+    except Exception as e:
+        print(f"오류, 타르코프 실행파일 버전 불러오기 실패, {file_path}. Error: {e}")
+        return None
 
 # use Tkinker to prompt the choose folder popup
 def choose_directory():
@@ -38,6 +51,14 @@ def choose_directory():
     directory = filedialog.askdirectory(title="복사 붙여넣은 타르코프 폴더를 선택해주세요")
     if not directory:
         input("아무것도 선택하지 않았습니다.")
+        exit(1)
+    
+    executable = os.path.join(directory, "EscapeFromTarkov.exe")
+    if not executable:
+        input("선택한 폴더에 타르코프 실행파일이 없습니다. 올바른 폴더를 선택해주세요.")
+        exit(1)
+    if version_check(executable) != metadata['version']: # compares the version info on the metadata file and the exe file itself so ppl won't screw up
+        input("선택한 폴더의 클라이언트 버전이 패쳐와 호환되지 않습니다! 본섭 업데이트 상태와 패쳐의 최신버전 유무를 확인해주세요!")
         exit(1)
     return directory
 
