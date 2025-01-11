@@ -1,4 +1,4 @@
-# [SPT 3.9 downpatcher](https://52sierra-main.github.io/spt-3.9.8downpatcher/)
+# [SPT downpatcher for 3.9.8](https://github.com/52sierra-main/spt-3.9.8downpatcher)
 
 scripts for creating binary patches for directories.  
 currently being used to create downpatches for latest tarkov client to make it compatible with spt 3.9
