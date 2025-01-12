@@ -1,7 +1,8 @@
 ## [github repository](https://github.com/52sierra-main/spt-3.9.8downpatcher)
 
 scripts for creating binary patches for directories.  
-currently being used to create downpatches for latest tarkov client to make it compatible with spt 3.9
+currently being used to create downpatches for latest tarkov client to make it compatible with spt 3.9  
+### [latest patcher link](https://drive.google.com/drive/folders/1_BsH7_F-xRXZYcMFnu4R5Y9b6tgUJ1ol?usp=sharing)
 
 ### patch_generator  
 will compare the source and target directories recursively and create a patch directory which mimics the folder structure.  
