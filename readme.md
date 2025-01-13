@@ -2,7 +2,10 @@
 
 scripts for creating binary patches for directories.  
 currently being used to create downpatches for latest tarkov client to make it compatible with spt 3.9  
-### [latest patcher link](https://drive.google.com/drive/folders/1_BsH7_F-xRXZYcMFnu4R5Y9b6tgUJ1ol?usp=sharing)
+### [latest patcher link](https://drive.google.com/drive/folders/1_BsH7_F-xRXZYcMFnu4R5Y9b6tgUJ1ol?usp=sharing)  
+This is probably what you're looking for.  
+Downgrades the latest tarkov client and installs spt 3.9.8.  
+Includes patcher, patchfiles and instructions.
 
 ### patch_generator  
 will compare the source and target directories recursively and create a patch directory which mimics the folder structure.  
