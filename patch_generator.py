@@ -95,7 +95,7 @@ def process_directory():
 
     # used tqdm to create a progress bar
     with tqdm(total=len(files_to_process), desc="Processing files", unit="file") as progress:
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=16) as executor:
             futures = [executor.submit(process_file, file) for file in files_to_process]
             for future in as_completed(futures):
                 progress.update(1)
