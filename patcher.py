@@ -34,7 +34,6 @@ def patch_check(dest_dir):
     typeA = ["tgikuvgt0dcv"]
     typeB = ["KpuvcnnaGHV"]
     root = os.path.basename(os.path.normpath(dest_dir))
-    print(root)
 
     Alist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeA]
     Blist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeB]
