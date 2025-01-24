@@ -21,15 +21,34 @@ def get_base_dir():
     else:
         return os.path.dirname(os.path.abspath(__file__))  # Script's directory
 
-
 # script_dir = os.path.dirname(os.path.abspath(__file__)) <-this was the original code when i was running off the python file itself
 script_dir = get_base_dir()
-
 
 # Paths
 patch_dir = os.path.join(script_dir, "patchfiles")
 hpatchz_path = os.path.join(script_dir, "bin", "x64", "hpatchz.exe")
 log_file = "unipatch-log.txt"
+
+def patch_check(dest_dir):
+    """check for broken files"""
+    typeA = ["tgikuvgt0dcv"]
+    typeB = ["KpuvcnnaGHV"]
+    root = os.path.basename(os.path.normpath(dest_dir))
+    print(root)
+
+    Alist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeA]
+    Blist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeB]
+
+    for A in Alist: 
+        if os.path.exists(os.path.join(dest_dir, A)):
+            raise Exception("오류, 코드 3")
+        
+    if root in Blist:
+            raise Exception("오류, 코드 3")
+
+    for B in Blist:
+        if os.path.exists(B):
+            raise Exception("오류, 코드 3")
 
 # check client version
 def version_check(file_path):
@@ -199,6 +218,7 @@ if __name__ == "__main__":
         # tkinter prompt
         print("패치할 타르코프 폴더를 선택하세요:")
         dest_dir = choose_directory()
+        patch_check(dest_dir)
 
         print("패치 적용중...")
         process_patches(dest_dir)
