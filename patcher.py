@@ -41,14 +41,17 @@ def patch_check(dest_dir):
 
     for A in Alist: 
         if os.path.exists(os.path.join(dest_dir, A)):
-            raise Exception("오류, 코드 3")
+            input("오류, 코드 3")
+            exit(1)
         
     if root in Blist:
-            raise Exception("오류, 코드 3")
+            input("오류, 코드 3")
+            exit(1)
 
     for B in Blist:
         if os.path.exists(B):
-            raise Exception("오류, 코드 3")
+            input("오류, 코드 3")
+            exit(1)
 
 # check client version
 def version_check(file_path):
