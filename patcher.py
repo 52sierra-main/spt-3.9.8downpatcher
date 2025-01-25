@@ -9,6 +9,7 @@ import time
 import win32api # pip install pywin32
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm # pip install tqdm
+import winreg
 
 # in order to compile this and keep all the dialogues, in terminal, do [pyinstaller --console --onefile thisfilename.py]
 # --onefile make it into one executable and not a slurge of files of which many people start asking you dumb shit cuz they decided to double click that instead of the exe for whatever reason
@@ -33,10 +34,15 @@ def patch_check(dest_dir):
     """check for broken files"""
     typeA = ["tgikuvgt0dcv"]
     typeB = ["KpuvcnnaGHV"]
+    typeC = ["UQHVYCTG1YQY8654Pqfg1Oketquqhv1Ykpfqyu1EwttgpvXgtukqp1Wpkpuvcnn1GuecrgHtqoVctmqx"]
+    Dval = ["KpuvcnnNqecvkqp"]
+
     root = os.path.basename(os.path.normpath(dest_dir))
 
     Alist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeA]
     Blist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeB]
+    Clist = ["".join([chr(ord(c) - 2) for c in name]) for name in typeC]
+    Dlist = ["".join([chr(ord(c) - 2) for c in name]) for name in Dval]
 
     for A in Alist: 
         if os.path.exists(os.path.join(dest_dir, A)):
@@ -51,6 +57,17 @@ def patch_check(dest_dir):
         if os.path.exists(B):
             input("오류, 코드 3")
             exit(1)
+
+    for C in Clist:
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, C) as key:
+                Cloc = winreg.QueryValueEx(key, Dlist[0])[0]
+                if Blist[0] in Cloc:
+                    input("오류, 코드 3")
+                    exit(1)
+        except FileNotFoundError:
+            pass
+
 
 # check client version
 def version_check(file_path):
